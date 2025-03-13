@@ -1,0 +1,10 @@
+version: 1
+datastore:
+  filename: data/data.json
+scheduler:
+  interval: 5
+eventstores:
+  beach_weather:
+    url: http://storage:8090/stats/weather
+  beach_activity:
+    url: http://storage:8090/stats/activity

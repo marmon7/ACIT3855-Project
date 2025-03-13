@@ -1,0 +1,53 @@
+openapi: 3.0.0
+info:
+  title: Stats API
+  description: API for event stats
+  contact:
+    email: bbarnett15@my.bcit.ca
+  version: 1.0.1
+paths:
+  /stats:
+    get:
+      summary: Gets the event stats
+      operationId: app.get_stats
+      description: Gets Activity and Weather processsed statistics
+      responses:
+        '200':
+          description: Successfully returned a list of Summer events
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  $ref: '#/components/schemas/ReadingStats'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+components:
+  schemas:
+    ReadingStats:
+      required:
+      - num_summer_activities
+      - avg_participants
+      - num_beach_conditions
+      - max_temperature
+      properties:
+        num_summer_activities:
+          type: integer
+          example: 500000
+        avg_participants:
+          type: integer
+          example: 10
+        num_beach_conditions:
+          type: integer
+          example: 500000
+        max_temperature:
+          type: integer
+          example: 30
+      type: object

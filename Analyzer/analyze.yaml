@@ -1,0 +1,167 @@
+openapi: 3.0.0
+info:
+  description: This API provides audit info
+  version: "1.0.0"
+  title: Audit API
+  contact:
+    email: bbarnett15@my.bcit.ca
+
+paths:
+  /bookactivity:
+    get:
+      summary: gets a book activity event from history
+      operationId: app.get_book_activity
+      description: Gets booking event from the event store
+      parameters:
+        - name: index
+          in: query
+          description: Gets the booking event at the index in the event store
+          schema:
+            type: integer
+            example: 100
+      responses:
+        '200':
+          description: Successfully returned a booking event
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/bookactivity'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+  /beachcondition:
+    get:
+      summary: gets a beach condition from history
+      operationId: app.get_beach_condition
+      description: Gets beach condition from the event store
+      parameters:
+        - name: index
+          in: query
+          description: Gets the bech condition at the index in the event store
+          schema:
+            type: integer
+            example: 100
+      responses:
+        '200':
+          description: Successfully returned a beach condition event
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/beachconditions'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '404':
+          description: Not Found
+
+  /stats:
+    get:
+      summary: gets the event stats
+      operationId: app.get_event_stats
+      description: Gets the stats of the history events
+      responses:
+        '200':
+          description: Successfully returned the stats
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/readingstats'
+
+components:
+  schemas:
+    bookactivity:
+      required:
+      - booking_id
+      - activity_id
+      - participants
+      - booking_time
+      - Beach_id
+      type: object
+      properties:
+        booking_id:
+          type: string
+          description: The booking ID for the booked activity
+          format: uuid
+          example: d290f1ee-6c54-4b01-90e6-d701748f0851
+        activity_id:
+          type: string
+          description: Activity ID (name)
+          example: Surfing Lesson
+        participants:
+          type: integer
+          description: Number of Participants
+          example: 2
+        booking_time:
+          type: string
+          description: timestamp for when the activity takes place
+          format: date-time
+          example: 2016-08-29T09:12:33.001Z
+        Beach_id:
+          type: string
+          description: Beach ID (name)
+          example: Kitsilano
+
+    beachconditions:
+      required:
+      - Device_id
+      - Beach_id
+      - timestamp
+      - Temperature
+      - Wave Height
+      type: object
+      properties:
+        Beach_id:
+          type: string
+          description: Beach ID (name)
+          example: Kitsilano
+        Device_id:
+          type: string
+          description: Device ID for the report
+          format: uuid
+          example: d290f1ee-6c54-4b01-90e6-d701748f0851
+        Temperature:
+          type: integer
+          description: Current Temperature of Beach (C)
+          example: 30
+        Wave Height:
+          type: integer
+          description: Current Wave Height (m)
+          example: 2
+        timestamp:
+          type: string
+          format: date-time
+          example: 2016-08-29T09:12:33.001Z
+
+    readingstats:
+      required:
+      - num_summer_activities
+      - num_beach_conditions
+      properties:
+        num_summer_activities:
+          type: integer
+          example: 500000
+        num_beach_conditions:
+          type: integer
+          example: 500000
+      type: object

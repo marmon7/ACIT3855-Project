@@ -1,0 +1,11 @@
+version: 1
+datastore:
+  user: marmon
+  password: password
+  hostname: db
+  port: 3306
+  db: summerfun
+events:
+  hostname: kafka
+  port: 29092
+  topic: events

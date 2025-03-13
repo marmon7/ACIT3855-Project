@@ -1,0 +1,105 @@
+---
+openapi: 3.0.0
+info:
+  title: Summer Outdoor Fun API
+  description: API for various Summer Activities
+  contact:
+    email: bbarnett15@my.bcit.ca
+  version: 1.0.0
+paths:
+  /summer/activity:
+    post:
+      summary: Book Beach Activity
+      description: Book Reservation for Beach Activity
+      operationId: app.book_Beach_activity
+      requestBody:
+        description: Beach Activity booking to add
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/bookactivity'
+      responses:
+        "201":
+          description: item created
+        "400":
+          description: "invalid input, object invalid"
+  /summer/weather:
+    post:
+      summary: Reports conditions at Beach
+      description: Adds a new Beach report to the system
+      operationId: app.report_beach_conditions
+      requestBody:
+        description: Beach Weather report to add
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/beachconditions'
+      responses:
+        "201":
+          description: item created
+        "400":
+          description: "invalid input, object invalid"
+components:
+  schemas:
+    bookactivity:
+      required:
+      - booking_id
+      - activity_id
+      - participants
+      - booking_time
+      - Beach_id
+      type: object
+      properties:
+        booking_id:
+          type: string
+          description: The booking ID for the booked activity
+          format: uuid
+          example: d290f1ee-6c54-4b01-90e6-d701748f0851
+        activity_id:
+          type: string
+          description: Activity ID (name)
+          example: Surfing Lesson
+        participants:
+          type: integer
+          description: Number of Participants
+          example: 2
+        booking_time:
+          type: string
+          description: timestamp for when the activity takes place
+          format: date-time
+          example: 2016-08-29T09:12:33.001Z
+        Beach_id:
+          type: string
+          description: Beach ID (name)
+          example: Kitsilano
+
+    beachconditions:
+      required:
+      - Device_id
+      - Beach_id
+      - timestamp
+      - Temperature
+      - Wave Height
+      type: object
+      properties:
+        Beach_id:
+          type: string
+          description: Beach ID (name)
+          example: Kitsilano
+        Device_id:
+          type: string
+          description: Device ID for the report
+          format: uuid
+          example: d290f1ee-6c54-4b01-90e6-d701748f0851
+        Temperature:
+          type: integer
+          description: Current Temperature of Beach (C)
+          example: 30
+        Wave Height:
+          type: integer
+          description: Current Wave Height (m)
+          example: 2
+        timestamp:
+          type: string
+          format: date-time
+          example: 2016-08-29T09:12:33.001Z
