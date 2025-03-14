@@ -1,5 +1,6 @@
 services:
     reciever:
+        restart: always
         build:
             dockerfile: Reciever/Dockerfile
         depends_on:
@@ -11,6 +12,7 @@ services:
             source: ./logs/reciever.log
             target: /app/reciever.log
     storage:
+        restart: always
         build:
             dockerfile: Storage/Dockerfile
         depends_on:
@@ -22,6 +24,7 @@ services:
             target: /app/storage.log
 
     processor:
+        restart: always
         build:
             dockerfile: Processing/Dockerfile
         depends_on:
@@ -34,6 +37,7 @@ services:
             source: ./logs/processor.log
             target: /app/processor.log
     analyzer:
+        restart: always
         build:
             dockerfile: Analyzer/Dockerfile
         depends_on:
@@ -57,10 +61,12 @@ services:
         # Where our data will be persisted
             - ./data/db:/var/lib/mysql
     zookeeper:
+        restart: always
         image: wurstmeister/zookeeper
         volumes:
         - zookeeper_data:/opt/zookeeper-3.4.13/conf/
     kafka:
+        restart: always
         image: wurstmeister/kafka
         command: sh -c "rm -f /kafka/kafka-logs-kafka/meta.properties && start-kafka.sh"
         hostname: kafka
