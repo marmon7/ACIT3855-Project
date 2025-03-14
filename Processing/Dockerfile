@@ -1,8 +1,8 @@
 FROM python:3
 LABEL maintainer="bbarnett15@my.bcit.ca"
-RUN mkdir /app
+RUN mkdir /app && /app/processor.log
+RUN chmod 666 /app/processor.log
 RUN mkdir /app/data
-RUN touch /app/processor.log
 # We copy just the requirements.txt first to leverage Docker cache
 # on `pip install`
 COPY ./Processing/requirements.txt /app/requirements.txt
