@@ -1,7 +1,6 @@
 FROM python:3
 LABEL maintainer="bbarnett15@my.bcit.ca"
-RUN mkdir /app && touch /app/analyzer.log
-RUN chmod 666 /app/analyzer.log
+RUN mkdir /app
 # We copy just the requirements.txt first to leverage Docker cache
 # on `pip install`
 COPY ./Analyzer/requirements.txt /app/requirements.txt
