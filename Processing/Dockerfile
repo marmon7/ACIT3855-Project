@@ -15,7 +15,6 @@ COPY ./Processing /app
 # Change permissions and become a non-privileged user
 RUN groupadd marmon && useradd -g marmon -s /bin/sh marmon
 RUN chown -R marmon:nogroup /app
-RUN chown -R marmon:nogroup /app/data
 USER marmon
 # Tells on which port the service listens in the container
 EXPOSE 8100
