@@ -6,11 +6,12 @@ from create_engine import BeachConditions,BookActivity,make_session
 import functools
 import logging
 import logging.config
-from sqlalchemy import select
+from sqlalchemy import select,create_engine
 from pykafka import KafkaClient
 import json
 from pykafka.common import OffsetType
 from threading import Thread
+from create_engine import Base
 
 with open('app_conf.yaml','r') as f:
     app_config = yaml.safe_load(f.read())
@@ -113,8 +114,13 @@ def setup_kafka_thread():
     t1.setDaemon(True)
     t1.start()
 
+def create_tables():
+    engine = create_engine(f"mysql://{app_config["datastore"]["user"]}:{app_config["datastore"]["password"]}@{app_config["datastore"]["hostname"]}/{app_config["datastore"]["db"]}")
+    Base.metadata.create_all(engine)
+
 app = connexion.FlaskApp(__name__, specification_dir='')
 app.add_api("SummerFun.yaml", strict_validation=True, validate_responses=True)
 if __name__ == "__main__":
+    create_tables()
     setup_kafka_thread()
     app.run(port=8090, host="0.0.0.0")
