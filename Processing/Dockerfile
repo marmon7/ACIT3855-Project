@@ -4,8 +4,8 @@ RUN mkdir /app
 # We copy just the requirements.txt first to leverage Docker cache
 # on `pip install`
 COPY ./Processing/requirements.txt /app/requirements.txt
-COPY ./config/processer_conf.yaml /app/app_conf.yaml
-COPY ./config/processer_log_conf.yaml /app/log_conf.yaml
+COPY ./config/processor_conf.yaml /app/app_conf.yaml
+COPY ./config/processor_log_conf.yaml /app/log_conf.yaml
 # Set the working directory
 WORKDIR /app
 # Install dependencies
