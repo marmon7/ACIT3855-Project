@@ -1,4 +1,6 @@
 import connexion
+from connexion.middleware import MiddlewarePosition
+from starlette.middleware.cors import CORSMiddleware
 import yaml
 import logging
 import logging.config
@@ -80,6 +82,14 @@ def get_event_stats():
     return {"num_summer_activities": counter_activity,"num_beach_conditions": counter_condition}, 200
 
 app = connexion.FlaskApp(__name__, specification_dir='')
+app.add_middleware(
+    CORSMiddleware,
+    position=MiddlewarePosition.BEFORE_EXCEPTION,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 app.add_api("analyze.yaml", strict_validation=True, validate_responses=True)
 if __name__ == "__main__":
     app.run(port=8110, host="0.0.0.0")
