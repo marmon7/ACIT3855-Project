@@ -58,11 +58,12 @@ def get_beach_condition(index):
 
 
 def get_event_stats():
-    logger.info("EVent stats request recieved")
+    logger.info("Event stats request recieved")
     hostname = f"{app_config["events"]["hostname"]}:{app_config["events"]["port"]}" # localhost:9092
     client = KafkaClient(hosts=hostname)
     topic = client.topics[app_config["events"]["topic"].encode()]
     consumer = topic.get_simple_consumer(reset_offset_on_start=True, consumer_timeout_ms=1000)
+    logger.info("new commit info")
 
     counter_activity = 0
     counter_condition = 0
