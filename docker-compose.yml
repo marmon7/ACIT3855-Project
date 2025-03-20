@@ -50,13 +50,9 @@ services:
             target: /app/analyzer.log
 
     db:
+        env_file: "db.env"    
         image: mysql
         restart: always
-        environment:
-            MYSQL_RANDOM_ROOT_PASSWORD: 1
-            MYSQL_USER: marmon
-            MYSQL_PASSWORD: password
-            MYSQL_DATABASE: summerfun
         volumes:
         # Where our data will be persisted
             - ./data/db:/var/lib/mysql
