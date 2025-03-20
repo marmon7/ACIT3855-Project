@@ -63,7 +63,7 @@ def get_event_stats():
     client = KafkaClient(hosts=hostname)
     topic = client.topics[app_config["events"]["topic"].encode()]
     consumer = topic.get_simple_consumer(reset_offset_on_start=True, consumer_timeout_ms=1000)
-    logger.info("new commit info")
+    logger.info("new commit info updated")
 
     counter_activity = 0
     counter_condition = 0
