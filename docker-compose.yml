@@ -1,12 +1,14 @@
 services:
     reciever:
         restart: always
+        deploy:
+            replicas: 3
         build:
             dockerfile: Reciever/Dockerfile
         depends_on:
         - kafka
         ports:
-            - '8080:8080'
+            - '8080-8089:8080'
         volumes:
           - type: bind
             source: ./logs/reciever.log
