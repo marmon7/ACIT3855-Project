@@ -12,7 +12,6 @@ const makeReq = (url, cb) => {
     fetch(url)
         .then(res => res.json())
         .then((result) => {
-            console.log("Received data: ", result)
             cb(result);
         }).catch((error) => {
             updateErrorMessages(error.message)
