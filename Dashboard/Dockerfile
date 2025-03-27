@@ -1,2 +1,2 @@
 FROM nginx
-COPY /app/Dashboard/html/ /usr/share/nginx/html
+COPY ./Dashboard/html /usr/share/nginx/html
