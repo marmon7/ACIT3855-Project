@@ -25,6 +25,8 @@ services:
 
     processor:
         restart: always
+        environment:
+            CORS_ALLOW_ALL: no # Change to yes if you want to allow all requests
         build:
             dockerfile: Processing/Dockerfile
         depends_on:
@@ -38,6 +40,8 @@ services:
             target: /app/processor.log
     analyzer:
         restart: always
+        environment:
+            CORS_ALLOW_ALL: no # Change to yes if you want to allow all requests
         build:
             dockerfile: Analyzer/Dockerfile
         depends_on:
@@ -85,5 +89,9 @@ services:
             dockerfile: Dashboard/Dockerfile
         ports:
             - '80:80'
+        depends_on:
+            - reciever
+            - processor
+            - analyzer
 volumes:
     zookeeper_data:

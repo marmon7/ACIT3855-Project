@@ -1,10 +1,10 @@
 /* UPDATE THESE VALUES TO MATCH YOUR SETUP */
 
-const PROCESSING_STATS_API_URL = "http://summerfun.westus.cloudapp.azure.com:8100/stats"
+const PROCESSING_STATS_API_URL = "http://summerfun.westus.cloudapp.azure.com/processor/stats"
 const ANALYZER_API_URL = {
-    stats: "http://summerfun.westus.cloudapp.azure.com:8110/stats",
-    beach_condition: "http://summerfun.westus.cloudapp.azure.com:8110/beachcondition",
-    book_activity: "http://summerfun.westus.cloudapp.azure.com:8110/bookactivity"
+    stats: "http://summerfun.westus.cloudapp.azure.com/analyzer/stats",
+    beach_condition: "http://summerfun.westus.cloudapp.azure.com/analyzer/beachcondition",
+    book_activity: "http://summerfun.westus.cloudapp.azure.com/analyzer/bookactivity"
 }
 
 // This function fetches and updates the general statistics
