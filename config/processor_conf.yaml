@@ -5,6 +5,6 @@ scheduler:
   interval: 5
 eventstores:
   beach_weather:
-    url: http://storage/storage/stats/weather
+    url: http://storage:8090/storage/stats/weather
   beach_activity:
-    url: http://storage/storage/stats/activity
+    url: http://storage:8090/storage/stats/activity
