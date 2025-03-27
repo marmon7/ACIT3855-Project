@@ -78,6 +78,12 @@ services:
             - ./data/kafka/:/kafka
         depends_on:
             - "zookeeper"
-
+    
+    Dashboard:
+        restart: always
+        build:
+            dockerfile: Dashboard/Dockerfile
+        ports:
+            - '80:80'
 volumes:
     zookeeper_data:
