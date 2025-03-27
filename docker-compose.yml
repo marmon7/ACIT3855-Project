@@ -79,7 +79,7 @@ services:
         depends_on:
             - "zookeeper"
     
-    Dashboard:
+    dashboard:
         restart: always
         build:
             dockerfile: Dashboard/Dockerfile
