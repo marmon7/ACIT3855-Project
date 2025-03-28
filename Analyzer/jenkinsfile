@@ -1,2 +1,2 @@
 @Library('ACIT3855_ci_functions@main') _
-summerfun_build('ACIT3855', 'Analyzer', 3000)
+summerfun_build('ACIT3855', 'Analyzer', 8110)
