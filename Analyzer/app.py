@@ -1,22 +1,24 @@
+"""Modules to run service"""
+import json
+import os
+import logging
+import logging.config
+import yaml
 import connexion
 from connexion.middleware import MiddlewarePosition
 from starlette.middleware.cors import CORSMiddleware
-import yaml
-import logging
-import logging.config
 from pykafka import KafkaClient
-import json
-import os
 
-with open('app_conf.yaml','r') as f:
+with open('app_conf.yaml','r', encoding="utf-8") as f:
     app_config = yaml.safe_load(f.read())
 
-with open("log_conf.yaml", "r") as f:
+with open("log_conf.yaml", "r", encoding="utf-8") as f:
     LOG_CONFIG = yaml.safe_load(f.read())
     logging.config.dictConfig(LOG_CONFIG)
 logger = logging.getLogger('basicLogger')
 
 def get_book_activity(index):
+    """function to get booking activities"""
     logger.info("Book Activity search request was received")
     hostname = f"{app_config["events"]["hostname"]}:{app_config["events"]["port"]}" # localhost:9092
     client = KafkaClient(hosts=hostname)
@@ -38,6 +40,7 @@ def get_book_activity(index):
     return payload, status
 
 def get_beach_condition(index):
+    """function to get beach conditions"""
     logger.info("Beach Condition search request was received")
     hostname = f"{app_config["events"]["hostname"]}:{app_config["events"]["port"]}" # localhost:9092
     client = KafkaClient(hosts=hostname)
@@ -59,8 +62,8 @@ def get_beach_condition(index):
 
     return payload, status
 
-
 def get_event_stats():
+    """function to get stats"""
     logger.info("Event stats request recieved")
     hostname = f"{app_config["events"]["hostname"]}:{app_config["events"]["port"]}" # localhost:9092
     client = KafkaClient(hosts=hostname)
@@ -70,7 +73,6 @@ def get_event_stats():
 
     counter_activity = 0
     counter_condition = 0
-    
     for msg in consumer:
         message = msg.value.decode("utf-8")
         data = json.loads(message)
@@ -80,7 +82,8 @@ def get_event_stats():
         if data['type'] == 'beachcondition':
             counter_condition+=1
 
-    return {"num_summer_activities": counter_activity,"num_beach_conditions": counter_condition}, 200
+    return {"num_summer_activities": counter_activity,
+            "num_beach_conditions": counter_condition}, 200
 
 app = connexion.FlaskApp(__name__, specification_dir='')
 if "CORS_ALLOW_ALL" in os.environ and os.environ["CORS_ALLOW_ALL"] == "yes":
