@@ -3,8 +3,7 @@ services:
         restart: always
         deploy:
             replicas: 3
-        build:
-            dockerfile: Reciever/Dockerfile
+        image: marmon7/acit3855:reciever
         depends_on:
         - kafka
         ports:
@@ -15,8 +14,7 @@ services:
             target: /app/reciever.log
     storage:
         restart: always
-        build:
-            dockerfile: Storage/Dockerfile
+        image: marmon7/acit3855:storage
         depends_on:
         - kafka
         - db
@@ -29,8 +27,7 @@ services:
         restart: always
         environment:
             CORS_ALLOW_ALL: no # Change to yes if you want to allow all requests
-        build:
-            dockerfile: Processing/Dockerfile
+        image: marmon7/acit3855:processor
         depends_on:
         - storage
         ports:
@@ -44,8 +41,7 @@ services:
         restart: always
         environment:
             CORS_ALLOW_ALL: no # Change to yes if you want to allow all requests
-        build:
-            dockerfile: Analyzer/Dockerfile
+        image: marmon7/acit3855:analyzer
         depends_on:
         - kafka
         ports:
