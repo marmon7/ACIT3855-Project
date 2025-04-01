@@ -1,22 +1,22 @@
-import connexion
-import yaml
+"""Modules to run service"""
+import json
 from datetime import datetime
-from connexion import NoContent
-from create_engine import BeachConditions,BookActivity,make_session
-import functools
 import logging
 import logging.config
+import functools
+from threading import Thread
+import yaml
+import connexion
 from sqlalchemy import select,create_engine
 from pykafka import KafkaClient
-import json
 from pykafka.common import OffsetType
-from threading import Thread
+from create_engine import BeachConditions,BookActivity,make_session
 from create_engine import Base
 
-with open('app_conf.yaml','r') as f:
+with open('app_conf.yaml','r', encoding="utf-8") as f:
     app_config = yaml.safe_load(f.read())
 
-with open("log_conf.yaml", "r") as f:
+with open("log_conf.yaml", "r", encoding="utf-8") as f:
     LOG_CONFIG = yaml.safe_load(f.read())
     logging.config.dictConfig(LOG_CONFIG)
 logger = logging.getLogger('basicLogger')
@@ -73,7 +73,7 @@ def process_messages():
     for msg in consumer:
         msg_str = msg.value.decode('utf-8')
         msg = json.loads(msg_str)
-        logger.info("Message: %s" % msg)
+        logger.info("Message: %s", msg)
         payload = msg["payload"]
         if msg["type"] == "beachcondition": # Change this to your event type
             # Store the event1 (i.e., the payload) to the DB
@@ -111,7 +111,7 @@ def process_messages():
 
 def setup_kafka_thread():
     t1 = Thread(target=process_messages)
-    t1.setDaemon(True)
+    t1.daemon = True
     t1.start()
 
 def create_tables():
