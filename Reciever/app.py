@@ -1,28 +1,30 @@
-import connexion
-import yaml
+"""Modules to run service"""
 import time
 from datetime import datetime
-from connexion import NoContent
+import json
 import logging
 import logging.config
+import yaml
+import connexion
+from connexion import NoContent
 from pykafka import KafkaClient
-import json
 
-with open('app_conf.yaml','r') as f:
+with open('app_conf.yaml','r', encoding="utf-8") as f:
     app_config = yaml.safe_load(f.read())
 
-with open("log_conf.yaml", "r") as f:
+with open("log_conf.yaml", "r", encoding="utf-8") as f:
     LOG_CONFIG = yaml.safe_load(f.read())
     logging.config.dictConfig(LOG_CONFIG)
 logger = logging.getLogger('basicLogger')
 
 def book_Beach_activity(body):
+    """Sends Payload to kafka for a beach activity event"""
     body["trace_id"] = time.time_ns()
     logger.info(f"Received event beach_activity with a trace id of {body["trace_id"]}")
     client = KafkaClient(hosts=f"{app_config["events"]["hostname"]}:{app_config["events"]["port"]}")
     topic = client.topics[str.encode(app_config["events"]["topic"])]
     producer = topic.get_sync_producer()
-    msg = { 
+    msg = {
         "type": "beachactivity",
         "datetime": datetime.now().strftime("%Y-%m-%dT%H:%M:%S"),
         "payload": body
@@ -33,12 +35,13 @@ def book_Beach_activity(body):
     return NoContent, 201
 
 def report_beach_conditions(body):
+    """Send Payload to kafka for a beach condition"""
     body["trace_id"] = time.time_ns()
     logger.info(f"Received event beach_conditions with a trace id of {body["trace_id"]}")
     client = KafkaClient(hosts=f"{app_config["events"]["hostname"]}:{app_config["events"]["port"]}")
     topic = client.topics[str.encode(app_config["events"]["topic"])]
     producer = topic.get_sync_producer()
-    msg = { 
+    msg = {
         "type": "beachcondition",
         "datetime": datetime.now().strftime("%Y-%m-%dT%H:%M:%S"),
         "payload": body
