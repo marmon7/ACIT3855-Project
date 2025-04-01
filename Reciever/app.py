@@ -20,7 +20,7 @@ logger = logging.getLogger('basicLogger')
 def book_beach_activity(body):
     """Sends Payload to kafka for a beach activity event"""
     body["trace_id"] = time.time_ns()
-    logger.info(f"Received event beach_activity with a trace id of {body["trace_id"]}")
+    logger.info("Received event beach_activity with a trace id of %s", body["trace_id"])
     client = KafkaClient(hosts=f"{app_config["events"]["hostname"]}:{app_config["events"]["port"]}")
     topic = client.topics[str.encode(app_config["events"]["topic"])]
     producer = topic.get_sync_producer()
@@ -31,13 +31,13 @@ def book_beach_activity(body):
     }
     msg_str = json.dumps(msg)
     producer.produce(msg_str.encode('utf-8'))
-    logger.info(f"Response for event beach_activity (id: {body["trace_id"]}) has status 201")
+    logger.info("Response for event beach_activity (id: %s) has status 201", body["trace_id"])
     return NoContent, 201
 
 def report_beach_conditions(body):
     """Send Payload to kafka for a beach condition"""
     body["trace_id"] = time.time_ns()
-    logger.info(f"Received event beach_conditions with a trace id of {body["trace_id"]}")
+    logger.info("Received event beach_conditions with a trace id of %s", body["trace_id"])
     client = KafkaClient(hosts=f"{app_config["events"]["hostname"]}:{app_config["events"]["port"]}")
     topic = client.topics[str.encode(app_config["events"]["topic"])]
     producer = topic.get_sync_producer()
@@ -48,7 +48,7 @@ def report_beach_conditions(body):
     }
     msg_str = json.dumps(msg)
     producer.produce(msg_str.encode('utf-8'))
-    logger.info(f"Response for event beach_weather (id: {body["trace_id"]}) has status 201")
+    logger.info("Response for event beach_weather (id: %s) has status 201", body["trace_id"])
     return NoContent, 201
 
 app = connexion.FlaskApp(__name__, specification_dir='')
