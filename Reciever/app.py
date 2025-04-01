@@ -17,7 +17,7 @@ with open("log_conf.yaml", "r", encoding="utf-8") as f:
     logging.config.dictConfig(LOG_CONFIG)
 logger = logging.getLogger('basicLogger')
 
-def book_Beach_activity(body):
+def book_beach_activity(body):
     """Sends Payload to kafka for a beach activity event"""
     body["trace_id"] = time.time_ns()
     logger.info(f"Received event beach_activity with a trace id of {body["trace_id"]}")

@@ -11,7 +11,7 @@ paths:
     post:
       summary: Book Beach Activity
       description: Book Reservation for Beach Activity
-      operationId: app.book_Beach_activity
+      operationId: app.book_beach_activity
       requestBody:
         description: Beach Activity booking to add
         content:
