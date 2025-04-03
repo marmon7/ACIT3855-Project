@@ -58,7 +58,7 @@ services:
         image: mysql
         restart: always
         healthcheck:
-            test: mysql --user=$MYSQL_USER --password=$MYSQL_PASSWORD --execute="SHOW DATABASES;"
+            test: mysql --user=marmon --password=password --execute="SHOW DATABASES;"
             interval: 10s
             timeout: 5s
             retries: 5
