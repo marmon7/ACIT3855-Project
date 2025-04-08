@@ -38,6 +38,7 @@ def get_stats():
 #Does the calculation of the statistics from storage
 def populate_stats():
     """populate stats on a schedule"""
+    logger.info("HELLO from ENterprise")
     logger.info("periodic processing has started")
     current_time = datetime.now(timezone.utc)
 

@@ -8,6 +8,7 @@ import connexion
 from connexion.middleware import MiddlewarePosition
 from starlette.middleware.cors import CORSMiddleware
 from pykafka import KafkaClient
+from .kafka_client import KafkaWrapper
 
 with open('app_conf.yaml','r', encoding="utf-8") as f:
     app_config = yaml.safe_load(f.read())
@@ -17,10 +18,12 @@ with open("log_conf.yaml", "r", encoding="utf-8") as f:
     logging.config.dictConfig(LOG_CONFIG)
 logger = logging.getLogger('basicLogger')
 
+kafka_wrapper = KafkaWrapper(f"{app_config["events"]["hostname"]}:{app_config["events"]["port"]}",
+                              app_config["events"]["topic"].encode())
+
 def get_book_activity(index):
     """function to get booking activities"""
     logger.info("Book Activity search request was received")
-    hostname = f"{app_config["events"]["hostname"]}:{app_config["events"]["port"]}" # localhost:9092
     client = KafkaClient(hosts=hostname)
     topic = client.topics[app_config["events"]["topic"].encode()]
     consumer = topic.get_simple_consumer(reset_offset_on_start=True, consumer_timeout_ms=1000)
