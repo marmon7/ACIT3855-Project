@@ -6,18 +6,46 @@ const ANALYZER_API_URL = {
     beach_condition: "http://summerfun.westus.cloudapp.azure.com/analyzer/beachcondition",
     book_activity: "http://summerfun.westus.cloudapp.azure.com/analyzer/bookactivity"
 }
-const CONSISTENCY_API_URL = "http://summerfun.westus.cloudapp.azure.com/consistency"
-
-function triggerConsistencyUpdate() {
-    // Perform the POST request using fetch API
-    fetch(`${CONSISTENCY_API_URL}/update`, {
-        method: 'POST',  // POST request
-        headers: {
-            'Content-Type': 'application/json',  // Define the content type
-        },
-    })
-    .then(makeReq(`${CONSISTENCY_API_URL}/checks`, (result) => updateCodeDiv(result, "consistency_update")))
+const CONSISTENCY_API_URL = {
+    update: "http://summerfun.westus.cloudapp.azure.com/consistency/update",
+    checks: "http://summerfun.westus.cloudapp.azure.com/consistency/checks"
 }
+
+async function triggerConsistencyUpdate() {
+    const resultsDiv = document.getElementById("consistency_update");
+    resultsDiv.textContent = "Updating...";
+  
+    try {
+      // Step 1: Send POST request to trigger update
+      const postResponse = await fetch(CONSISTENCY_API_URL.update, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      });
+  
+      if (!postResponse.ok) {
+        throw new Error("Update request failed");
+      }
+  
+      await new Promise(resolve => setTimeout(resolve, 500)); 
+  
+      // Step 2: Fetch the updated consistency data
+      const getResponse = await fetch(CONSISTENCY_API_URL.checks);
+  
+      if (!getResponse.ok) {
+        throw new Error("Failed to fetch updated results");
+      }
+  
+      const data = await getResponse.json();
+  
+      // Step 3: Update the div with new data
+      resultsDiv.textContent = JSON.stringify(data, null, 2);
+    } catch (error) {
+      resultsDiv.textContent = `Error: ${error.message}`;
+      console.error("Error during consistency update:", error);
+    }
+  }
 
 // This function fetches and updates the general statistics
 const makeReq = (url, cb) => {
