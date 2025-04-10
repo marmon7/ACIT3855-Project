@@ -5,7 +5,6 @@ import logging
 import logging.config
 import yaml
 import time
-import jsonify
 from datetime import datetime, timezone
 import httpx
 import connexion
@@ -75,10 +74,10 @@ def get_checks():
     if os.path.exists(app_config['filename']):
         with open(app_config['filename'], 'r') as file:
             check_results = json.load(file)
-        return jsonify(check_results), 200
+        return check_results, 200
     else:
         logger.error("failed to find data.json")
-        return jsonify({"message": "No consistency checks have been run yet."}), 404
+        return {"message": "No consistency checks have been run yet."}, 404
 
 app = connexion.FlaskApp(__name__, specification_dir='')
 

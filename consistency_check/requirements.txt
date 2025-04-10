@@ -1,4 +1,3 @@
-jsonify
 httpx
 connexion[flask,uvicorn,swagger-ui]
 setuptools
