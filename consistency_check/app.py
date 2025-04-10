@@ -32,12 +32,16 @@ def run_consistency_checks():
     ana_list_activity_set = set((event["event_id"], event["trace_id"]) for event in stor_list_beach.json())
     stor_list_beach_set = set((event["event_id"], event["trace_id"]) for event in ana_list_activity.json())
     ana_list_beach_set = set((event["event_id"], event["trace_id"]) for event in ana_list_beach.json())
+    diff_queue_activity = ana_list_activity_set - stor_list_activity_set
+    diff_db_activity = stor_list_activity_set-ana_list_activity_set
+    diff_queue_beach = ana_list_beach_set-stor_list_beach_set
+    diff_db_beach = stor_list_beach_set-ana_list_beach_set
     events = ["activity", "beach"]
     # Create a new set with the added event info
-    not_in_db_activity = {(*t, events[0]) for t in ana_list_activity_set - stor_list_activity_set}
-    not_in_queue_activity = {(*t, events[0]) for t in stor_list_activity_set-ana_list_activity_set}
-    not_in_db_beach = {(*t, events[1]) for t in ana_list_beach_set-stor_list_beach_set}
-    not_in_queue_beach = {(*t, events[1]) for t in stor_list_beach_set-ana_list_beach_set}
+    not_in_db_activity = {(*t, events[0]) for t in diff_queue_activity}
+    not_in_queue_activity = {(*t, events[0]) for t in diff_db_activity}
+    not_in_db_beach = {(*t, events[1]) for t in diff_db_beach}
+    not_in_queue_beach = {(*t, events[1]) for t in diff_queue_beach}
     not_in_db_activity_list = [{"event_id": event_id, "trace_id": trace_id, "event_type": event_type} for event_id, trace_id, event_type in not_in_db_activity]
     not_in_queue_activity_list = [{"event_id": event_id, "trace_id": trace_id, "event_type": event_type} for event_id, trace_id, event_type in not_in_queue_activity]
     not_in_db_beach_list = [{"event_id": event_id, "trace_id": trace_id, "event_type": event_type} for event_id, trace_id, event_type in not_in_db_beach]

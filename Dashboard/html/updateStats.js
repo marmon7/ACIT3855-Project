@@ -16,15 +16,6 @@ function triggerConsistencyUpdate() {
             'Content-Type': 'application/json',  // Define the content type
         },
     })
-    .then(response => response.json())  // Parse the JSON response
-    .then(data => {
-        alert('Consistency update triggered successfully!');
-    })
-    .catch(error => {
-        // Handle error
-        console.error('Error triggering consistency update:', error);
-        alert('Failed to trigger consistency update.');
-    })
     .then(makeReq(`${CONSISTENCY_API_URL}/checks`, (result) => updateCodeDiv(result, "consistency_update")))
 }
 
