@@ -6,6 +6,27 @@ const ANALYZER_API_URL = {
     beach_condition: "http://summerfun.westus.cloudapp.azure.com/analyzer/beachcondition",
     book_activity: "http://summerfun.westus.cloudapp.azure.com/analyzer/bookactivity"
 }
+const CONSISTENCY_API_URL = "http://consistency:8120/consistency"
+
+function triggerConsistencyUpdate() {
+    // Perform the POST request using fetch API
+    fetch(`${CONSISTENCY_API_URL}/update`, {
+        method: 'POST',  // POST request
+        headers: {
+            'Content-Type': 'application/json',  // Define the content type
+        },
+    })
+    .then(response => response.json())  // Parse the JSON response
+    .then(data => {
+        alert('Consistency update triggered successfully!');
+    })
+    .catch(error => {
+        // Handle error
+        console.error('Error triggering consistency update:', error);
+        alert('Failed to trigger consistency update.');
+    })
+    .then(makeReq(`${CONSISTENCY_API_URL}/checks`, (result) => updateCodeDiv(result, "consistency_update")))
+}
 
 // This function fetches and updates the general statistics
 const makeReq = (url, cb) => {
