@@ -86,7 +86,7 @@ components:
             type: object
             properties:
               event_id:
-                type: integer
+                type: string
               trace_id:
                 type: integer
         not_in_queue:
@@ -95,7 +95,7 @@ components:
             type: object
             properties:
               event_id:
-                type: integer
+                type: string
               trace_id:
                 type: integer
 
