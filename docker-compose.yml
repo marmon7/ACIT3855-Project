@@ -4,7 +4,7 @@ services:
         deploy:
             replicas: 3
         build:
-            dockerfile: Receiver/Dockerfile
+            dockerfile: Reciever/Dockerfile
         depends_on:
         - kafka
         ports:
