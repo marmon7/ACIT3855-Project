@@ -59,7 +59,7 @@ def run_consistency_checks():
             }
         },
         "not_in_db": not_in_db_list,
-        "not in_queue" : not_in_queue_list
+        "not_in_queue" : not_in_queue_list
     }
     with open(app_config['filename'], 'w', encoding="utf-8") as fp:
         json.dump(updated_data,fp)
