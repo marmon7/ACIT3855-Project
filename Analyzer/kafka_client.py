@@ -1,8 +1,16 @@
 import time
 import random
+import logging
+import logging.config
+import yaml
 from pykafka import KafkaClient
 from pykafka.exceptions import KafkaException
 from pykafka.common import OffsetType
+
+with open("log_conf.yaml", "r", encoding="utf-8") as f:
+    LOG_CONFIG = yaml.safe_load(f.read())
+    logging.config.dictConfig(LOG_CONFIG)
+logger = logging.getLogger('basicLogger')
 
 class KafkaWrapper:
     def __init__(self, hostname, topic):
@@ -52,6 +60,7 @@ class KafkaWrapper:
         try:
             topic = self.client.topics[self.topic]
             self.consumer = topic.get_simple_consumer(
+                consumer_group=topic,
                 reset_offset_on_start=False,
                 auto_offset_reset=OffsetType.LATEST
             )

@@ -10,7 +10,7 @@ import connexion
 from sqlalchemy import select,create_engine,func
 from create_engine import BeachConditions,BookActivity,make_session
 from create_engine import Base
-from .kafka_client import KafkaWrapper
+from kafka_client import KafkaWrapper
 
 with open('app_conf.yaml','r', encoding="utf-8") as f:
     app_config = yaml.safe_load(f.read())
