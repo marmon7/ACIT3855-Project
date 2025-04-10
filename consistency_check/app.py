@@ -21,9 +21,9 @@ def run_consistency_checks():
     start_time = time.time()
     logging.info("Update process started.")
 
-    pro_data = httpx.get(app_config['pro_url'])
-    stor_data = httpx.get(f"{app_config['stor_url']}/count")
-    ana_data = httpx.get(f"{app_config['ana_url']}/stats")
+    pro_data = httpx.get(app_config['pro_url']).json()
+    stor_data = httpx.get(f"{app_config['stor_url']}/count").json()
+    ana_data = httpx.get(f"{app_config['ana_url']}/stats").json()
     stor_list_activity = httpx.get(f"{app_config['stor_url']}/get_list_activity")
     stor_list_beach = httpx.get(f"{app_config['stor_url']}/get_list_beach")
     ana_list_activity = httpx.get(f"{app_config['ana_url']}/get_list_activity")
