@@ -74,6 +74,73 @@ paths:
                   $ref: '#/components/schemas/beachconditions'
         "400":
           description: "invalid input, object invalid"
+  /count:
+    get:
+      summary: Retrieve the count of records for each event type
+      description: Returns the count of records for each event type (e.g., count of event_type_1, event_type_2).
+      operationId: app.get_counts
+      responses:
+        '200':
+          description: A list of event type counts
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: integer
+                example:
+                  count_event_type_1: 123
+                  count_event_type_2: 456
+  
+  /get_list_activity:
+    get:
+      summary: Retrieve a list of event IDs and trace IDs for activities
+      description: Returns a list of event IDs and trace IDs for activities.
+      operationId: app.get_list_activity
+      responses:
+        '200':
+          description: A list of event IDs and trace IDs
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    event_id:
+                      type: string
+                      description: The unique ID of the event
+                    trace_id:
+                      type: integer
+                      description: The trace ID associated with the event
+                  required:
+                    - event_id
+                    - trace_id
+  
+  /get_list_beach:
+    get:
+      summary: Retrieve a list of event IDs and trace IDs for beach
+      description: Returns a list of event IDs and trace IDs for beach.
+      operationId: app.get_list_beach
+      responses:
+        '200':
+          description: A list of event IDs and trace IDs
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    event_id:
+                      type: string
+                      description: The unique ID of the event
+                    trace_id:
+                      type: integer
+                      description: The trace ID associated with the event
+                  required:
+                    - event_id
+                    - trace_id
 
 components:
   schemas:

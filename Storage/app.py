@@ -7,7 +7,7 @@ import functools
 from threading import Thread
 import yaml
 import connexion
-from sqlalchemy import select,create_engine
+from sqlalchemy import select,create_engine,func
 from pykafka import KafkaClient
 from pykafka.common import OffsetType
 from create_engine import BeachConditions,BookActivity,make_session
@@ -46,6 +46,36 @@ def get_weather_stats(start_timestamp, end_timestamp):
     session.close()
     logger.info("Found %d Beach Weather (start: %s, end: %s)", len(results), start, end)
     return results
+
+def get_counts():
+    # Count the number of entries in the BookActivity table
+    session = make_session()
+    bookactivity_count = session.query(func.count(BookActivity.id)).scalar()
+
+    # Count the number of entries in the BeachConditions table
+    beachconditions_count = session.query(func.count(BeachConditions.id)).scalar()
+
+    # Return the counts as a JSON response
+    return {
+        "BookActivity": bookactivity_count,
+        "BeachConditions": beachconditions_count
+    }, 200
+
+def get_list_activity():
+    session = make_session()
+    events = session.query(BookActivity.booking_id, BookActivity.trace_id).all()
+    results = [{"event_id": event.booking_id, "trace_id": event.trace_id} for event in events]
+    session.close()
+    logger.info("finished getting all activities")
+    return results, 200
+
+def get_list_beach():
+    session = make_session()
+    events = session.query(BeachConditions.device_id, BeachConditions.trace_id).all()
+    results = [{"event_id": event.device_id, "trace_id": event.trace_id} for event in events]
+    session.close()
+    logger.info("finished getting all beach conditions")
+    return results, 200
 
 
 def use_db_session(func):

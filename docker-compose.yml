@@ -53,6 +53,22 @@ services:
             source: ./logs/analyzer.log
             target: /app/analyzer.log
 
+    consistency:
+        restart: always
+        build:
+            dockerfile: consistency_check/Dockerfile
+        ports:
+            - '8120:8120'
+        depends_on:
+            - storage
+            - processor
+            - analyzer
+        volumes:
+          - ./data/consistency:/app/data
+          - type: bind
+            source: ./logs/consistency.log
+            target: /app/consistency.log
+
     db:
         env_file: "db.env"    
         image: mysql

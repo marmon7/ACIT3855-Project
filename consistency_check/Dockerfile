@@ -17,7 +17,7 @@ RUN groupadd marmon && useradd -g marmon -s /bin/sh marmon
 RUN chown -R marmon:nogroup /app
 USER marmon
 # Tells on which port the service listens in the container
-EXPOSE 8110
+EXPOSE 8120
 # Entrypoint = run Python
 ENTRYPOINT [ "python3" ]
 # Default = run app.py

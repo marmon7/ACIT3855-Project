@@ -24,6 +24,7 @@ kafka_wrapper = KafkaWrapper(f"{app_config["events"]["hostname"]}:{app_config["e
 def get_book_activity(index):
     """function to get booking activities"""
     logger.info("Book Activity search request was received")
+    hostname = f"{app_config["events"]["hostname"]}:{app_config["events"]["port"]}" # localhost:9092
     client = KafkaClient(hosts=hostname)
     topic = client.topics[app_config["events"]["topic"].encode()]
     consumer = topic.get_simple_consumer(reset_offset_on_start=True, consumer_timeout_ms=1000)
@@ -87,6 +88,51 @@ def get_event_stats():
 
     return {"num_summer_activities": counter_activity,
             "num_beach_conditions": counter_condition}, 200
+
+def get_list_activity():
+    """function to get stats"""
+    logger.info("Event stats request recieved")
+    hostname = f"{app_config["events"]["hostname"]}:{app_config["events"]["port"]}" # localhost:9092
+    client = KafkaClient(hosts=hostname)
+    topic = client.topics[app_config["events"]["topic"].encode()]
+    consumer = topic.get_simple_consumer(reset_offset_on_start=True, consumer_timeout_ms=1000)
+    logger.info("retriving list of activities")
+    activity_list = []
+
+    for msg in consumer:
+        message = msg.value.decode("utf-8")
+        data = json.loads(message)
+        if data['type'] == 'beachactivity':
+            activity = {
+                    "event_id": data['payload']['booking_id'],
+                    "trace_id": data['payload']['trace_id']
+                }
+            activity_list.append(activity)
+    return activity_list, 200
+
+def get_list_beach():
+    """function to get stats"""
+    logger.info("Event stats request recieved")
+    hostname = f"{app_config["events"]["hostname"]}:{app_config["events"]["port"]}" # localhost:9092
+    client = KafkaClient(hosts=hostname)
+    topic = client.topics[app_config["events"]["topic"].encode()]
+    consumer = topic.get_simple_consumer(reset_offset_on_start=True, consumer_timeout_ms=1000)
+    logger.info("retriving list of activities")
+    activity_list = []
+
+    for msg in consumer:
+        message = msg.value.decode("utf-8")
+        data = json.loads(message)
+        if data['type'] == 'beachcondition':
+            activity = {
+                    "event_id": data['payload']['Device_id'],
+                    "trace_id": data['payload']['trace_id']
+                }
+            activity_list.append(activity)
+    return activity_list, 200
+
+            
+
 
 app = connexion.FlaskApp(__name__, specification_dir='')
 if "CORS_ALLOW_ALL" in os.environ and os.environ["CORS_ALLOW_ALL"] == "yes":

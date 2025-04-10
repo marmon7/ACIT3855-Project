@@ -50,8 +50,14 @@ def run_consistency_checks():
         "last_updated": datetime.now(timezone.utc).isoformat(timespec="seconds") + "Z",
         "counts": {
             "db": stor_data,
-            "queue": ana_data,
-            "processing": pro_data
+            "queue": {
+                "BookActivity": ana_data['num_summer_activities'],
+                "BeachConditions": ana_data['num_beach_conditions']
+            },
+            "processing": {
+                "BookActivity": pro_data['num_summer_activities'],
+                "BeachConditions": pro_data['num_beach_conditions']
+            }
         },
         "not_in_db": not_in_db_list,
         "not in_queue" : not_in_queue_list
@@ -74,6 +80,6 @@ def get_checks():
 
 app = connexion.FlaskApp(__name__, specification_dir='')
 
-app.add_api("analyze.yaml", base_path="/analyzer", strict_validation=True, validate_responses=True)
+app.add_api("consistency_check.yaml", base_path="/consistency", strict_validation=True, validate_responses=True)
 if __name__ == "__main__":
-    app.run(port=8110, host="0.0.0.0")
+    app.run(port=8120, host="0.0.0.0")
