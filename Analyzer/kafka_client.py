@@ -1,5 +1,8 @@
 import time
 import random
+from pykafka import KafkaClient
+from pykafka.exceptions import KafkaException
+from pykafka.common import OffsetType
 
 class KafkaWrapper:
     def __init__(self, hostname, topic):
