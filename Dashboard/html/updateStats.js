@@ -6,7 +6,7 @@ const ANALYZER_API_URL = {
     beach_condition: "http://summerfun.westus.cloudapp.azure.com/analyzer/beachcondition",
     book_activity: "http://summerfun.westus.cloudapp.azure.com/analyzer/bookactivity"
 }
-const CONSISTENCY_API_URL = "http://consistency:8120/consistency"
+const CONSISTENCY_API_URL = "http://summerfun.westus.cloudapp.azure.com/consistency"
 
 function triggerConsistencyUpdate() {
     // Perform the POST request using fetch API
