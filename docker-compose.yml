@@ -28,7 +28,7 @@ services:
     processor:
         restart: always
         environment:
-            CORS_ALLOW_ALL: no # Change to yes if you want to allow all requests
+            CORS_ALLOW_ALL: yes # Change to yes if you want to allow all requests
         image: marmon7/acit3855:processor
         depends_on:
         - storage
@@ -42,7 +42,7 @@ services:
     analyzer:
         restart: always
         environment:
-            CORS_ALLOW_ALL: no # Change to yes if you want to allow all requests
+            CORS_ALLOW_ALL: yes # Change to yes if you want to allow all requests
         image: marmon7/acit3855:analyzer
         depends_on:
         - kafka
