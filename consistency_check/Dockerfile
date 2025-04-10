@@ -11,7 +11,7 @@ WORKDIR /app
 # Install dependencies
 RUN pip3 install -r requirements.txt
 # Copy the source code
-COPY ./consistency /app
+COPY ./consistency_check /app
 # Change permissions and become a non-privileged user
 RUN groupadd marmon && useradd -g marmon -s /bin/sh marmon
 RUN chown -R marmon:nogroup /app
