@@ -1,11 +1,7 @@
 version: 1
 filename: ./data/data.json
-beach_weather:
-  stor_url: http://storage:8090/storage/stats/weather
-  ana_url: http://analyzer:8110/analyzer/stats/weather
-beach_activity:
-  stor_url: http://storage:8090/storage/stats/activity
-  ana_url: http://analyzer:8110/analyzer/stats/weather
+stor_url: http://storage:8090/storage
+ana_url: http://analyzer:8110/analyzer
 pro_url: http://processor:8100/processor/stats
 events:
   hostname: kafka
