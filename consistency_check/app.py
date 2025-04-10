@@ -71,11 +71,13 @@ def run_consistency_checks():
     logging.info(f"Consistency checks completed | processing_time_ms={duration:.2f} | missing_in_db = {missing_in_db} | missing_in_queue = {missing_in_queue}")
 
 def get_checks():
+    logger.info("Show Consistency data")
     if os.path.exists(app_config['filename']):
         with open(app_config['filename'], 'r') as file:
             check_results = json.load(file)
         return jsonify(check_results), 200
     else:
+        logger.error("failed to find data.json")
         return jsonify({"message": "No consistency checks have been run yet."}), 404
 
 app = connexion.FlaskApp(__name__, specification_dir='')
