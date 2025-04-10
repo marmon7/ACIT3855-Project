@@ -30,7 +30,7 @@ services:
     processor:
         restart: always
         environment:
-            CORS_ALLOW_ALL: yes # Change to yes if you want to allow all requests
+            CORS_ALLOW_ALL: no # Change to yes if you want to allow all requests
         build:
             dockerfile: Processor/Dockerfile
         depends_on:
@@ -45,7 +45,7 @@ services:
     analyzer:
         restart: always
         environment:
-            CORS_ALLOW_ALL: yes # Change to yes if you want to allow all requests
+            CORS_ALLOW_ALL: no # Change to yes if you want to allow all requests
         build:
             dockerfile: Analyzer/Dockerfile
         depends_on:
@@ -97,6 +97,7 @@ services:
         command: sh -c "rm -f /kafka/kafka-logs-kafka/meta.properties && start-kafka.sh"
         hostname: kafka
         environment:
+            KAFKA_BROKER_ID: 1
             KAFKA_CREATE_TOPICS: "events:1:1" # topic:partition:replicas
             KAFKA_ADVERTISED_HOST_NAME: localhost # docker-machine ip
             KAFKA_LISTENERS: INSIDE://:29092,OUTSIDE://:9092
