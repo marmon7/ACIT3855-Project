@@ -28,11 +28,10 @@ def run_consistency_checks():
     stor_list_beach = httpx.get(f"{app_config['stor_url']}/get_list_beach")
     ana_list_activity = httpx.get(f"{app_config['ana_url']}/get_list_activity")
     ana_list_beach = httpx.get(f"{app_config['ana_url']}/get_list_beach")
-    print(stor_list_activity)
-    stor_list_activity_set = set((event["event_id"], event["trace_id"]) for event in stor_list_activity)
-    ana_list_activity_set = set((event["event_id"], event["trace_id"]) for event in stor_list_beach)
-    stor_list_beach_set = set((event["event_id"], event["trace_id"]) for event in ana_list_activity)
-    ana_list_beach_set = set((event["event_id"], event["trace_id"]) for event in ana_list_beach)
+    stor_list_activity_set = set((event["event_id"], event["trace_id"]) for event in stor_list_activity.json())
+    ana_list_activity_set = set((event["event_id"], event["trace_id"]) for event in stor_list_beach.json())
+    stor_list_beach_set = set((event["event_id"], event["trace_id"]) for event in ana_list_activity.json())
+    ana_list_beach_set = set((event["event_id"], event["trace_id"]) for event in ana_list_beach.json())
     events = ["activity", "beach"]
     # Create a new set with the added event info
     not_in_db_activity = {(*t, e) for t, e in zip(ana_list_activity_set-stor_list_activity_set, events[0])}
