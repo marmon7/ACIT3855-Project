@@ -7,8 +7,7 @@ import yaml
 import connexion
 from connexion.middleware import MiddlewarePosition
 from starlette.middleware.cors import CORSMiddleware
-from pykafka import KafkaClient
-#from ..kafka_client import KafkaWrapper
+from kafka_client import KafkaWrapper
 
 with open('app_conf.yaml','r', encoding="utf-8") as f:
     app_config = yaml.safe_load(f.read())
@@ -18,20 +17,15 @@ with open("log_conf.yaml", "r", encoding="utf-8") as f:
     logging.config.dictConfig(LOG_CONFIG)
 logger = logging.getLogger('basicLogger')
 
-#kafka_wrapper = KafkaWrapper(f"{app_config["events"]["hostname"]}:{app_config["events"]["port"]}",
-#                              app_config["events"]["topic"].encode())
+kafka_wrapper = KafkaWrapper(f"{app_config["events"]["hostname"]}:{app_config["events"]["port"]}",app_config["events"]["topic"].encode())
 
 def get_book_activity(index):
     """function to get booking activities"""
     logger.info("Book Activity search request was received")
-    hostname = f"{app_config["events"]["hostname"]}:{app_config["events"]["port"]}" # localhost:9092
-    client = KafkaClient(hosts=hostname)
-    topic = client.topics[app_config["events"]["topic"].encode()]
-    consumer = topic.get_simple_consumer(reset_offset_on_start=True, consumer_timeout_ms=1000)
     counter = 0
     status = 404
     payload = { "message": f"No message at index {index}!"}
-    for msg in consumer:
+    for msg in kafka_wrapper.messages():
         message = msg.value.decode("utf-8")
         data = json.loads(message)
         if data['type'] == 'beachactivity':
@@ -46,14 +40,10 @@ def get_book_activity(index):
 def get_beach_condition(index):
     """function to get beach conditions"""
     logger.info("Beach Condition search request was received")
-    hostname = f"{app_config["events"]["hostname"]}:{app_config["events"]["port"]}" # localhost:9092
-    client = KafkaClient(hosts=hostname)
-    topic = client.topics[app_config["events"]["topic"].encode()]
-    consumer = topic.get_simple_consumer(reset_offset_on_start=True, consumer_timeout_ms=1000)
     counter = 0
     status = 404
     payload = { "message": f"No message at index {index}!"}
-    for msg in consumer:
+    for msg in kafka_wrapper.messages():
         message = msg.value.decode("utf-8")
         data = json.loads(message)
         if data['type'] == 'beachcondition':
@@ -69,15 +59,11 @@ def get_beach_condition(index):
 def get_event_stats():
     """function to get stats"""
     logger.info("Event stats request recieved")
-    hostname = f"{app_config["events"]["hostname"]}:{app_config["events"]["port"]}" # localhost:9092
-    client = KafkaClient(hosts=hostname)
-    topic = client.topics[app_config["events"]["topic"].encode()]
-    consumer = topic.get_simple_consumer(reset_offset_on_start=True, consumer_timeout_ms=1000)
     logger.info("new commit info updated")
 
     counter_activity = 0
     counter_condition = 0
-    for msg in consumer:
+    for msg in kafka_wrapper.messages():
         message = msg.value.decode("utf-8")
         data = json.loads(message)
         if data['type'] == 'beachactivity':
@@ -92,14 +78,10 @@ def get_event_stats():
 def get_list_activity():
     """function to get stats"""
     logger.info("Event stats request recieved")
-    hostname = f"{app_config["events"]["hostname"]}:{app_config["events"]["port"]}" # localhost:9092
-    client = KafkaClient(hosts=hostname)
-    topic = client.topics[app_config["events"]["topic"].encode()]
-    consumer = topic.get_simple_consumer(reset_offset_on_start=True, consumer_timeout_ms=1000)
     logger.info("retriving list of activities")
     activity_list = []
 
-    for msg in consumer:
+    for msg in kafka_wrapper.messages():
         message = msg.value.decode("utf-8")
         data = json.loads(message)
         if data['type'] == 'beachactivity':
@@ -113,14 +95,10 @@ def get_list_activity():
 def get_list_beach():
     """function to get stats"""
     logger.info("Event stats request recieved")
-    hostname = f"{app_config["events"]["hostname"]}:{app_config["events"]["port"]}" # localhost:9092
-    client = KafkaClient(hosts=hostname)
-    topic = client.topics[app_config["events"]["topic"].encode()]
-    consumer = topic.get_simple_consumer(reset_offset_on_start=True, consumer_timeout_ms=1000)
     logger.info("retriving list of activities")
     activity_list = []
 
-    for msg in consumer:
+    for msg in kafka_wrapper.messages():
         message = msg.value.decode("utf-8")
         data = json.loads(message)
         if data['type'] == 'beachcondition':

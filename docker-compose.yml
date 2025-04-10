@@ -3,7 +3,8 @@ services:
         restart: always
         deploy:
             replicas: 3
-        image: marmon7/acit3855:reciever
+        build:
+            dockerfile: Receiver/Dockerfile
         depends_on:
         - kafka
         ports:
@@ -14,7 +15,8 @@ services:
             target: /app/reciever.log
     storage:
         restart: always
-        image: marmon7/acit3855:storage
+        build:
+            dockerfile: Storage/Dockerfile
         depends_on:
             db:
                 condition: service_healthy
@@ -29,7 +31,8 @@ services:
         restart: always
         environment:
             CORS_ALLOW_ALL: no # Change to yes if you want to allow all requests
-        image: marmon7/acit3855:processor
+        build:
+            dockerfile: Processor/Dockerfile
         depends_on:
         - storage
         ports:
@@ -43,7 +46,8 @@ services:
         restart: always
         environment:
             CORS_ALLOW_ALL: no # Change to yes if you want to allow all requests
-        image: marmon7/acit3855:analyzer
+        build:
+            dockerfile: Analyzer/Dockerfile
         depends_on:
         - kafka
         ports:
@@ -93,6 +97,7 @@ services:
         command: sh -c "rm -f /kafka/kafka-logs-kafka/meta.properties && start-kafka.sh"
         hostname: kafka
         environment:
+            KAFKA_BROKER_ID: 1
             KAFKA_CREATE_TOPICS: "events:1:1" # topic:partition:replicas
             KAFKA_ADVERTISED_HOST_NAME: localhost # docker-machine ip
             KAFKA_LISTENERS: INSIDE://:29092,OUTSIDE://:9092

@@ -8,10 +8,9 @@ from threading import Thread
 import yaml
 import connexion
 from sqlalchemy import select,create_engine,func
-from pykafka import KafkaClient
-from pykafka.common import OffsetType
 from create_engine import BeachConditions,BookActivity,make_session
 from create_engine import Base
+from kafka_client import KafkaWrapper
 
 with open('app_conf.yaml','r', encoding="utf-8") as f:
     app_config = yaml.safe_load(f.read())
@@ -20,6 +19,8 @@ with open("log_conf.yaml", "r", encoding="utf-8") as f:
     LOG_CONFIG = yaml.safe_load(f.read())
     logging.config.dictConfig(LOG_CONFIG)
 logger = logging.getLogger('basicLogger')
+
+kafka_wrapper = KafkaWrapper(f"{app_config["events"]["hostname"]}:{app_config["events"]["port"]}",app_config["events"]["topic"].encode())
 
 def get_activity_stats(start_timestamp, end_timestamp):
     session = make_session()
@@ -90,17 +91,7 @@ def use_db_session(func):
 
 def process_messages():
     """ Process event messages """
-    hostname = f"{app_config["events"]["hostname"]}:{app_config["events"]["port"]}" # localhost:9092
-    client = KafkaClient(hosts=hostname)
-    topic = client.topics[str.encode(app_config["events"]["topic"])]
-    # Create a consume on a consumer group, that only reads new messages
-    # (uncommitted messages) when the service re-starts (i.e., it doesn't
-    # read all the old messages from the history in the message queue).
-    consumer = topic.get_simple_consumer(consumer_group=b'event_group',
-    reset_offset_on_start=False,
-    auto_offset_reset=OffsetType.LATEST)
-    # This is blocking - it will wait for a new message
-    for msg in consumer:
+    for msg in kafka_wrapper.messages():
         msg_str = msg.value.decode('utf-8')
         msg = json.loads(msg_str)
         logger.info("Message: %s", msg)
@@ -137,7 +128,7 @@ def process_messages():
             session.commit()
             session.close()
             logger.debug(f"Stored event beach_activity with a trace id of {payload["trace_id"]}")
-        consumer.commit_offsets()
+        kafka_wrapper.consumer.commit_offsets()
 
 def setup_kafka_thread():
     t1 = Thread(target=process_messages)
