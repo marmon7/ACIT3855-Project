@@ -28,9 +28,9 @@ def book_beach_activity(body):
         "datetime": datetime.now().strftime("%Y-%m-%dT%H:%M:%S"),
         "payload": body
     }
-    msg_str = json.dumps(msg)
-    kafka_wrapper.producer_msg(msg_str.encode('utf-8'))
+    kafka_wrapper.send(msg)
     logger.info("Response for event beach_activity (id: %s) has status 201", body["trace_id"])
+    kafka_wrapper.close()
     return NoContent, 201
 
 def report_beach_conditions(body):
@@ -42,9 +42,9 @@ def report_beach_conditions(body):
         "datetime": datetime.now().strftime("%Y-%m-%dT%H:%M:%S"),
         "payload": body
     }
-    msg_str = json.dumps(msg)
-    kafka_wrapper.producer_msg(msg_str.encode('utf-8'))
+    kafka_wrapper.send(msg)
     logger.info("Response for event beach_weather (id: %s) has status 201", body["trace_id"])
+    kafka_wrapper.close()
     return NoContent, 201
 
 app = connexion.FlaskApp(__name__, specification_dir='')
