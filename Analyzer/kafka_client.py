@@ -28,7 +28,7 @@ class KafkaWrapper:
             try:
                 logger.info(f"Connecting to Kafka ({self.hosts}), attempt {attempt}...")
                 self.client = KafkaClient(hosts=self.hosts)
-                topic = self.client.topics[self.topic_name.encode("utf-8")]
+                topic = self.client.topics[self.topic_name]
                 self.consumer = topic.get_simple_consumer(
                     consumer_group=self.group.encode("utf-8") if self.group else None,
                     auto_commit_enable=self.auto_commit,
