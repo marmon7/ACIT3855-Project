@@ -3,6 +3,7 @@ import json
 import os
 import logging
 import logging.config
+import time
 import yaml
 import connexion
 from connexion.middleware import MiddlewarePosition
@@ -57,31 +58,29 @@ def get_beach_condition(index):
     return payload, status
 
 def get_event_stats():
-    """Function to get Kafka event stats"""
     logger.info("Event stats request received")
-    logger.info("Starting message consumption loop...")
 
     counter_activity = 0
     counter_condition = 0
 
-    for msg in kafka_wrapper.messages():
+    start_time = time.time()
+    max_duration = 5  # seconds
+    max_messages = 1000
+
+    for i, msg in enumerate(kafka_wrapper.messages()):
         if msg is None:
             continue
 
-        try:
-            message = msg.value.decode("utf-8")
-            data = json.loads(message)
-            logger.debug(f"Received message: {data}")
+        message = msg.value.decode("utf-8")
+        data = json.loads(message)
 
-            if data.get('type') == 'beachactivity':
-                counter_activity += 1
+        if data.get("type") == "beachactivity":
+            counter_activity += 1
+        elif data.get("type") == "beachcondition":
+            counter_condition += 1
 
-            elif data.get('type') == 'beachcondition':
-                counter_condition += 1
-
-        except Exception as e:
-            logger.warning(f"Error processing message: {e}")
-            continue
+        if i >= max_messages or time.time() - start_time > max_duration:
+            break
 
     return {
         "num_summer_activities": counter_activity,
