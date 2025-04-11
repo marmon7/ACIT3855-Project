@@ -64,6 +64,7 @@ def get_event_stats():
     counter_activity = 0
     counter_condition = 0
     for msg in kafka_wrapper.messages():
+        print(msg)
         message = msg.value.decode("utf-8")
         data = json.loads(message)
         if data['type'] == 'beachactivity':
