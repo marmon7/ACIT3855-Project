@@ -57,24 +57,36 @@ def get_beach_condition(index):
     return payload, status
 
 def get_event_stats():
-    """function to get stats"""
-    logger.info("Event stats request recieved")
-    logger.info("new commit info updated")
+    """Function to get Kafka event stats"""
+    logger.info("Event stats request received")
+    logger.info("Starting message consumption loop...")
 
     counter_activity = 0
     counter_condition = 0
+
     for msg in kafka_wrapper.messages():
-        print(msg)
-        message = msg.value.decode("utf-8")
-        data = json.loads(message)
-        if data['type'] == 'beachactivity':
-            counter_activity+=1
+        if msg is None:
+            continue
 
-        if data['type'] == 'beachcondition':
-            counter_condition+=1
+        try:
+            message = msg.value.decode("utf-8")
+            data = json.loads(message)
+            logger.debug(f"Received message: {data}")
 
-    return {"num_summer_activities": counter_activity,
-            "num_beach_conditions": counter_condition}, 200
+            if data.get('type') == 'beachactivity':
+                counter_activity += 1
+
+            elif data.get('type') == 'beachcondition':
+                counter_condition += 1
+
+        except Exception as e:
+            logger.warning(f"Error processing message: {e}")
+            continue
+
+    return {
+        "num_summer_activities": counter_activity,
+        "num_beach_conditions": counter_condition
+    }, 200
 
 def get_list_activity():
     """function to get stats"""
