@@ -17,7 +17,7 @@ with open("log_conf.yaml", "r", encoding="utf-8") as f:
     logging.config.dictConfig(LOG_CONFIG)
 logger = logging.getLogger('basicLogger')
 
-kafka_wrapper = KafkaWrapper(f"{app_config["events"]["hostname"]}:{app_config["events"]["port"]}",app_config["events"]["topic"].encode())
+kafka_wrapper = KafkaWrapper(f"{app_config["events"]["hostname"]}:{app_config["events"]["port"]}",app_config["events"]["topic"])
 
 def book_beach_activity(body):
     """Sends Payload to kafka for a beach activity event"""
