@@ -5,5 +5,5 @@ ana_url: http://analyzer:8110/analyzer
 pro_url: http://processor:8100/processor/stats
 events:
   hostname: kafka
-  port: 29092
+  port: 9092
   topic: events
