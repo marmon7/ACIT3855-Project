@@ -1,0 +1,73 @@
+openapi: 3.0.0
+info:
+  description: This API provides consistency checks between the database and the Kafka queue
+  version: "1.0.0"
+  title: Anomaly API
+  contact:
+    email: bbarnett15@my.bcit.ca
+
+paths:
+  /update:
+    put:
+      summary: Endpoint to run the checks
+      operationId: app.update_anomalies
+      description: Runs the anomaly check and updates the JSON datastore
+      responses:
+        '200':
+          description: Successfully ran the checks
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  num_of_anomalies:
+                    type: integer
+  /anomalies:
+    get:
+      summary: Displays the results of the checks
+      operationId: app.get_anomalies
+      description: Gets the results of the anomaly checks from JSON and returns them
+      parameters:
+        - name: event
+          in: query
+          description: filters events of that type only
+          schema:
+            type: string
+            example: activity
+      responses:
+        '200':
+          description: Successfully returned the results
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    event_id:
+                      type: string
+                      description: The unique ID of the event
+                    trace_id:
+                      type: integer
+                      description: The trace ID associated with the event
+                    event_type:
+                      type: string
+                      description: The event type
+                    anomaly_type:
+                      type: string
+                      description: The anomaly found
+                  required:
+                    - event_id
+                    - trace_id
+                    - event_type
+                    - anomaly_type
+        '404':
+          description: No checks have been run
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+

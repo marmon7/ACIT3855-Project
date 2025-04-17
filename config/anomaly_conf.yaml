@@ -1,0 +1,6 @@
+version: 1
+filename: ./data/data.json
+events:
+  hostname: kafka
+  port: 9092
+  topic: events

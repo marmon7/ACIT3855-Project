@@ -1,0 +1,4 @@
+httpx
+connexion[flask,uvicorn,swagger-ui]
+setuptools
+pykafka

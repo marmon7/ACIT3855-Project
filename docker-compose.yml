@@ -72,7 +72,22 @@ services:
           - type: bind
             source: ./logs/consistency.log
             target: /app/consistency.log
-
+    anomaly:
+        restart: always
+        environment:
+            PARTICIPANTS_MAX: 100
+            WAVE_HEIGHT_MAX: 50
+        build:
+            dockerfile: anomaly_detector/Dockerfile
+        ports:
+            - '8130:8130'
+        depends_on:
+            - kafka
+        volumes:
+          - ./data/anomaly:/app/data
+          - type: bind
+            source: ./logs/anomaly.log
+            target: /app/anomaly.log
     db:
         env_file: "db.env"    
         image: mysql
