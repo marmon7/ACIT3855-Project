@@ -83,7 +83,7 @@ def get_anomalies(event=None):
 
 app = connexion.FlaskApp(__name__, specification_dir='')
 
-app.add_api("anomaly.yaml", base_path="/anomalies", strict_validation=True, validate_responses=True)
+app.add_api("anomaly.yaml", base_path="/anomaly", strict_validation=True, validate_responses=True)
 if __name__ == "__main__":
     logger.info(f"Wave Height Max: {os.getenv("WAVE_HEIGHT_MAX")}, Paricipants max: {os.getenv("PARTICIPANTS_MAX")}")
     app.run(port=8130, host="0.0.0.0")
