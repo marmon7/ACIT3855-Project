@@ -60,7 +60,7 @@ def update_anomalies():
 
 def get_anomalies(event=None):
     logger.debug("Anomaly request recieved")
-    if (event != 'beach') or (event != 'activity'):
+    if (event != 'beach') and (event != 'activity'):
         return NoContent, 400
     if os.path.exists(app_config['filename']):
         with open(app_config['filename'], 'r') as file:
