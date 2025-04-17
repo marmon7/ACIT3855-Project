@@ -74,9 +74,9 @@ def get_event_stats():
         message = msg.value.decode("utf-8")
         data = json.loads(message)
 
-        if data.get("type") == "beachactivity":
+        if data["type"] == "beachactivity":
             counter_activity += 1
-        elif data.get("type") == "beachcondition":
+        elif data["type"] == "beachcondition":
             counter_condition += 1
 
         if i >= max_messages or time.time() - start_time > max_duration:

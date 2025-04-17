@@ -1,7 +1,7 @@
 import time
 import random
 import logging
-import logging.config
+import logging.config   
 import yaml
 from pykafka import KafkaClient
 from pykafka.exceptions import KafkaException
@@ -27,8 +27,8 @@ class KafkaWrapper:
             if self.make_client():
                 if self.make_consumer():
                     break
-            # Sleeps for a random amount of time (0.5 to 1.5s)
-            time.sleep(random.randint(500, 1500) / 1000)
+        # Sleeps for a random amount of time (0.5 to 1.5s)
+        time.sleep(random.randint(500, 1500) / 1000)
 
     def make_client(self):
         """
@@ -47,7 +47,7 @@ class KafkaWrapper:
             self.client = None
             self.consumer = None
             return False
-        
+
     def make_consumer(self):
         """
         Runs once, makes a consumer and sets it on the instance.
@@ -60,10 +60,11 @@ class KafkaWrapper:
         try:
             topic = self.client.topics[self.topic]
             self.consumer = topic.get_simple_consumer(
-                consumer_group=topic,
+                consumer_group=self.topic,
                 reset_offset_on_start=False,
                 auto_offset_reset=OffsetType.LATEST
-            )
+                )
+
         except KafkaException as e:
             msg = f"Make error when making consumer: {e}"
             logger.warning(msg)
@@ -71,6 +72,14 @@ class KafkaWrapper:
             self.consumer = None
             return False
         
+    def commit(self):
+        """Commit the offsets of the consumer"""
+        if self.consumer is not None:
+            self.consumer.commit_offsets()
+            logger.debug("Offsets committed!")
+        else:
+            logger.warning("Consumer is None, cannot commit offsets.")
+            
     def messages(self):
         """Generator method that catches exceptions in the consumer loop"""
         if self.consumer is None:

@@ -128,7 +128,7 @@ def process_messages():
             session.commit()
             session.close()
             logger.debug(f"Stored event beach_activity with a trace id of {payload["trace_id"]}")
-        kafka_wrapper.consumer.commit_offsets()
+        kafka_wrapper.commit()
 
 def setup_kafka_thread():
     t1 = Thread(target=process_messages)
