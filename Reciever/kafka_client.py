@@ -1,7 +1,8 @@
-import json
+import time
+import random
 import logging
-import logging.config
-import yaml
+import logging.config 
+import yaml  
 from pykafka import KafkaClient
 from pykafka.exceptions import KafkaException
 
@@ -11,44 +12,76 @@ with open("log_conf.yaml", "r", encoding="utf-8") as f:
 logger = logging.getLogger('basicLogger')
 
 class KafkaWrapper:
-    def __init__(self, hosts="kafka:9092", topic_name="events"):
-        self.hosts = hosts
-        self.topic_name = topic_name
+    def __init__(self, hostname, topic):
+        self.hostname = hostname
+        self.topic = topic
         self.client = None
-        self.topic = None
         self.producer = None
-        self._connect()
+        self.connect()
 
-    def _connect(self):
-        """Initialize Kafka client and producer"""
+    def connect(self):
+        """Infinite loop: will keep trying"""
+        while True:
+            logger.debug("Trying to connect to Kafka...")
+            if self.make_client():
+                if self.make_producer():
+                    break
+        # Sleeps for a random amount of time (0.5 to 1.5s)
+        time.sleep(random.randint(500, 1500) / 1000)
+
+    def make_client(self):
+        """
+        Runs once, makes a client and sets it on the instance.
+        Returns: True (success), False (failure)
+        """
+        if self.client is not None:
+            return True
         try:
-            logger.info(f"Connecting to Kafka at {self.hosts}")
-            self.client = KafkaClient(hosts=self.hosts)
-            self.topic = self.client.topics[self.topic_name.encode()]
-            self.producer = self.topic.get_sync_producer()
-            logger.info(f"Connected to Kafka topic: {self.topic_name}")
-        except Exception as e:
-            logger.error(f"Failed to connect to Kafka: {e}")
+            self.client = KafkaClient(hosts=self.hostname)
+            logger.info("Kafka client created!")
+            return True
+        except KafkaException as e:
+            msg = f"Kafka error when making client: {e}"
+            logger.warning(msg)
             self.client = None
             self.producer = None
+            return False
 
-    def send(self, message: dict):
-        """Send a JSON message to Kafka"""
-        if self.producer is None:
-            logger.warning("Producer not initialized. Reconnecting...")
-            self._connect()
-
-        try:
-            payload = json.dumps(message).encode("utf-8")
-            self.producer.produce(payload)
-            logger.debug(f"Sent message to Kafka: {message}")
-        except KafkaException as e:
-            logger.error(f"KafkaException while sending: {e}")
-        except Exception as e:
-            logger.error(f"Unexpected error while sending to Kafka: {e}")
-
-    def close(self):
-        """Flush and close the producer"""
+    def make_producer(self):
+        """
+        Runs once, makes a producer and sets it on the instance.
+        Returns: True (success), False (failure)
+        """
         if self.producer is not None:
-            self.producer.stop()
-            logger.info("Kafka producer closed.")
+            return True
+        if self.client is None:
+            return False
+        try:
+            topic = self.client.topics[self.topic]
+            self.producer = topic.get_sync_producer()
+        except KafkaException as e:
+            msg = f"Make error when making producer: {e}"
+            logger.warning(msg)
+            self.client = None
+            self.producer = None
+            return False
+        
+    def send(self, message):
+        """Produce a message to Kafka, waiting for Kafka if necessary."""
+        attempts = 0
+        retries = 5
+        while attempts < retries:
+            if self.producer is None:
+                self.connect()
+            try:
+                self.producer.produce(message.encode('utf-8'))
+                logger.info("Message produced successfully")
+                return True
+            except KafkaException as e:
+                logger.warning(f"Kafka error when producing message: {e}")
+                self.client = None
+                self.producer = None
+                attempts += 1
+                time.sleep(1.0)  # Wait before retry
+        logger.error("Failed to produce message after retries")
+        return False
