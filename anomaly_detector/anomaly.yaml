@@ -31,7 +31,6 @@ paths:
         - name: event
           in: query
           description: filters events of that type only
-          default: None
           schema:
             type: string
             example: activity
