@@ -1,5 +1,6 @@
 """Modules to run service"""
 import json
+from json.decoder import JSONDecodeError
 import time
 import os
 import logging
@@ -63,19 +64,20 @@ def get_anomalies(event=None):
     if (event != 'beach') and (event != 'activity'):
         return NoContent, 400
     if os.path.exists(app_config['filename']):
-        with open(app_config['filename'], 'r') as file:
-            anomalies = json.load(file)
-        if anomalies == {}:
-            return NoContent, 204
-        if event == None:
+        try:
+            with open(app_config['filename'], 'r') as file:
+                anomalies = json.load(file)
+            if event == None:
+                logger.debug("anomalies response returned")
+                return anomalies, 200
+            filtered_anomalies = []
+            for anomaly in anomalies:
+                if anomaly['event_type'] == event:
+                    filtered_anomalies.append(anomaly)
             logger.debug("anomalies response returned")
-            return anomalies, 200
-        filtered_anomalies = []
-        for anomaly in anomalies:
-            if anomaly['event_type'] == event:
-                filtered_anomalies.append(anomaly)
-        logger.debug("anomalies response returned")
-        return filtered_anomalies, 200
+            return filtered_anomalies, 200
+        except JSONDecodeError:
+            return NoContent, 204
 
     else:
         logger.error("failed to find data.json")
