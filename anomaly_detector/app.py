@@ -45,7 +45,7 @@ def update_anomalies():
         if data['type'] == 'beachcondition':
             if data['payload']['Wave Height'] >= int(os.getenv("WAVE_HEIGHT_MAX")):
                 anomaly.update({
-                    'event_id': data['payload']['device_id'],
+                    'event_id': data['payload']['Device_id'],
                     'trace_id': data['payload']['trace_id'],
                     'event_type': 'beach',
                     'anomaly_type': f"Wave height over {os.getenv("WAVE_HEIGHT_MAX")} meters"
