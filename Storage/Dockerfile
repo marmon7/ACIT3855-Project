@@ -1,4 +1,4 @@
-FROM python:3.12
+FROM python:3.12-slim
 LABEL maintainer="bbarnett15@my.bcit.ca"
 RUN mkdir /app
 # We copy just the requirements.txt first to leverage Docker cache
