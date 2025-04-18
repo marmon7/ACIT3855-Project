@@ -90,7 +90,7 @@ services:
             target: /app/anomaly.log
     db:
         env_file: "db.env"    
-        image: mysql
+        image: mysql:8.0
         restart: always
         healthcheck:
             test: ["CMD", "bash", "-c", "mysql --user=$$MYSQL_USER --password=$$MYSQL_PASSWORD --execute='SHOW DATABASES;'"]
