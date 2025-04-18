@@ -2,7 +2,7 @@ services:
     reciever:
         restart: always
         deploy:
-            replicas: 3
+            replicas: 1
         build:
             dockerfile: Reciever/Dockerfile
         depends_on:
