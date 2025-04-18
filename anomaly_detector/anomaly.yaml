@@ -33,7 +33,8 @@ paths:
           description: filters events of that type only
           schema:
             type: string
-            example: activity
+            nullable: true
+            default: null
       responses:
         '200':
           description: Successfully returned the results

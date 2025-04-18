@@ -61,7 +61,7 @@ def update_anomalies():
 
 def get_anomalies(event=None):
     logger.debug("Anomaly request recieved")
-    if (event != 'beach') and (event != 'activity'):
+    if event not in ('beach', 'activity') and event is not None:
         return NoContent, 400
     if os.path.exists(app_config['filename']):
         try:
